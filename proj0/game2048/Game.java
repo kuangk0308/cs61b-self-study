@@ -35,6 +35,9 @@ public class Game {
             moved = false;
             while (!moved) {
                 String cmnd = _source.getKey();
+                System.out.println("DEBUG: 收到按键指令 [" + cmnd + "]"); // 关键 Debug
+// ... 剩下的 switch 语句不变
+
                 switch (cmnd) {
                     case "Quit":
                         _playing = false;
@@ -60,13 +63,13 @@ public class Game {
      *  or "Right"). */
     private Side keyToSide(String key) {
         switch (key) {
-            case "Up": case "\u2191":
+            case "Up": case "\u2191": case "向上箭头": // <--- 加这一行
                 return NORTH;
-            case "Down": case "\u2193":
+            case "Down": case "\u2193": case "向下箭头": // <--- 加这一行
                 return SOUTH;
-            case "Left": case "\u2190":
+            case "Left": case "\u2190": case "向左箭头": // <--- 加这一行
                 return WEST;
-            case "Right": case "\u2192":
+            case "Right": case "\u2192": case "向右箭头": // <--- 加这一行
                 return EAST;
             default:
                 throw new IllegalArgumentException("unknown key designation");

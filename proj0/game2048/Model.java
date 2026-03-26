@@ -107,19 +107,64 @@ public class Model extends Observable {
      *    and the trailing tile does not.
      * */
     public boolean tilt(Side side) {
+        System.out.println("Tilt triggered with side: " + side); // 加这行
         boolean changed;
         changed = false;
+        int size = board.size();
 
         // TODO: Modify this.board (and perhaps this.score) to account
         // for the tilt to the Side SIDE. If the board changed, set the
         // changed local variable to true.
+        board.setViewingPerspective(side);
+        for (int col = 0; col <size ; col+=1) {
+            boolean[] merged = new boolean[size];//记录瓷砖是否被合并过
+            // 从上往下扫描每一行（跳过最顶行，因为最顶行不需要移动）
+            for (int row = size - 2; row >= 0; row--) {
+                // 取出当前位置的瓷砖
+                Tile t = board.tile(col, row);
+                // 如果这个位置是空的，跳过
+                if (t == null) continue;
+                //设定一个该瓷砖要走到的行数，初始化为当前行
+                int targetRow = row;
+                //只要目标位置上面有空，就加一
+                while (targetRow + 1 < size && board.tile(col, targetRow + 1) == null  ) {
+                    targetRow += 1;
+                }
 
+                // while 结束后，检查 targetRow 上面有没有可以合并的
+                if (targetRow + 1 < size                              // 没到顶
+                        && board.tile(col, targetRow + 1) != null         // 上面有瓷砖
+                        && board.tile(col, targetRow + 1).value() == t.value()  // 值相同
+                        && !merged[targetRow + 1]) {                      // 上面那个没被合并过
+
+                    // 合并：移动到 targetRow + 1
+                    board.move(col, targetRow + 1, t);
+                    score += board.tile(col, targetRow + 1).value();  // 更新分数
+                    merged[targetRow + 1] = true;                     // 标记已合并
+                    changed = true;
+
+                } else if (targetRow != row) {
+                    // 不能合并，只是移动
+                    board.move(col, targetRow, t);
+                    changed = true;
+                }
+
+
+            }
+        }
+        board.setViewingPerspective(Side.NORTH); // 记得改回来，这是规则要求
         checkGameOver();
+        // ... 原代码
         if (changed) {
             setChanged();
+            System.out.println("Tilt changed successfully!"); // 加上这行
+        } else {
+            System.out.println("Tilt returned false. No change."); // 加上这行
         }
         return changed;
     }
+
+
 
     /** Checks if the game is over and sets the gameOver variable
      *  appropriately.
@@ -137,8 +182,30 @@ public class Model extends Observable {
      *  Empty spaces are stored as null.
      * */
     public static boolean emptySpaceExists(Board b) {
+        int x = b.size();
+        int flag = 0;
+        for(int col =0;col<x;col+=1 ){
+            for (int row =0 ; row<x ; row+=1){
+                if( b.tile(col,row)==null){
+                    flag =1;
+                    break;
+                }
+
+            }
+            if (flag==1){
+                break;
+            }
+        }
+        if (flag==1){
+            return true;
+        }
+        else {
+            return false;
+        }
+
+
         // TODO: Fill in this function.
-        return false;
+
     }
 
     /**
@@ -147,9 +214,23 @@ public class Model extends Observable {
      * given a Tile object t, we get its value with t.value().
      */
     public static boolean maxTileExists(Board b) {
+            int size = b.size();
+            for (int col = 0; col < size; col++) {
+                for (int row = 0; row < size; row++) {
+                    Tile t = b.tile(col, row);
+                    // 必须先判断 t 是否为空，防止访问 null.value() 导致崩溃
+                    if (t != null && t.value() == MAX_PIECE) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+
         // TODO: Fill in this function.
-        return false;
-    }
+
+
 
     /**
      * Returns true if there are any valid moves on the board.
@@ -158,8 +239,34 @@ public class Model extends Observable {
      * 2. There are two adjacent tiles with the same value.
      */
     public static boolean atLeastOneMoveExists(Board b) {
+        if (emptySpaceExists(b)==true){
+            return true;
+        }
+        else {
+            int size = b.size();
+            for (int col = 0; col < size; col++) {
+                for (int row = 0; row < size; row++) {
+                    Tile t = b.tile(col, row);
+                   if (col+1<size){
+                       Tile t1 = b.tile(col+1, row);
+                       if(t.value()==t1.value()){
+                           return true;
+                       }
+                    }
+                    if (row+1<size){
+                        Tile t2 = b.tile(col, row+1);
+                        if(t.value()==t2.value()){
+                            return true;
+                        }
+                    }
+                }
+            }
+            return false;
+        }
+
+
         // TODO: Fill in this function.
-        return false;
+
     }
 
 
