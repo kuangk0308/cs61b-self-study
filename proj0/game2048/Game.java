@@ -46,6 +46,7 @@ public class Game {
                         return;
                     case "Up": case "Down": case "Left": case "Right":
                     case "\u2190": case "\u2191": case "\u2192": case "\u2193":
+                    case "向上箭头":case "向下箭头":case "向左箭头":case "向右箭头":
                         if (!_model.gameOver() && _model.tilt(keyToSide(cmnd))) {
                             _model.notifyObservers(cmnd);
                             moved = true;
