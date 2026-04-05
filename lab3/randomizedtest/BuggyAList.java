@@ -59,12 +59,17 @@ public class BuggyAList<Item> {
     /** Deletes item from back of the list and
       * returns deleted item. */
     public Item removeLast() {
-        if ((size < items.length / 4) && (size > 4)) {
-            resize(size / 4);
-        }
-        Item x = getLast();
+        Item x = getLast();//应该先把要返回的值算好，再去判断需不需要减半，因为减半之后就不应该对链表进行操作了，否则就影响储存了
+        int beforeSize = size;                 // 缩容前的 size
         items[size - 1] = null;
         size = size - 1;
+
+        if (((size) < (items.length) / 4) && (size > 4)) {
+        //size是存的数字的数量，lenth是数组的长度，我们应该在需要缩减的时候把数组长度减少而不是size
+            resize((items.length) / 2);//应该是除2就行了，除4肯定不对,而且应该对真实长度除二
+        }
+
+
         return x;
     }
 }
