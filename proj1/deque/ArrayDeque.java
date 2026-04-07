@@ -2,7 +2,7 @@ package deque;
 
 import java.util.Iterator;
 
-public class ArrayDeque<T> implements Deque<T> {
+public class ArrayDeque<T> implements Deque<T> ,Iterable<T> {
     private T[] items; // 底层数组
     private int size;
     //我们用环形数组实现，构建两个不变量，用来确定下一次添加时前后的索引
@@ -123,12 +123,12 @@ public class ArrayDeque<T> implements Deque<T> {
 
     @Override
     public boolean equals(Object o){
-        if (!(o instanceof ArrayDeque)) return false;
+        if (!(o instanceof Deque)) return false;
 
-        ArrayDeque<?> other = (ArrayDeque<?>) o;
-        if (size != other.size) return false;
+        Deque<?> other = (Deque<?>) o;
+        if (size() != other.size()) return false;
 
-        for (int i = 0; i < size; i++) {
+        for (int i = 0; i < size(); i++) {
             T thisItem = get(i);
             Object otherItem = other.get(i);
             if (thisItem == null) {

@@ -1,7 +1,7 @@
 package deque;
 import java.util.Iterator;
 
-public class LinkedListDeque<T> implements  Deque<T>  {//T是泛化类型
+public class LinkedListDeque<T> implements  Deque<T> ,Iterable<T> {//T是泛化类型
     private class Node{
         T item;//即储存的数据
         Node prev;//前
@@ -114,16 +114,16 @@ public class LinkedListDeque<T> implements  Deque<T>  {//T是泛化类型
 
     public boolean equals(Object o){
         //在二者是同一类型的情况下是可以直接比较的
-        if (!(o instanceof LinkedListDeque)) {
+        if (!(o instanceof Deque)) {
             return false;
         }
         //已确认是同一类型，转换为同一类型（因为系统仍然认为o是object）
-        LinkedListDeque<T> other = (LinkedListDeque<T>) o;
+        Deque<T> other = (Deque<T>) o;
         if (this.size() != other.size()) {
             return false;
         }
         //逐个比较
-        for (int i = 0; i < size; i++) {
+        for (int i = 0; i < size(); i++) {
             T thisItem = this.get(i);
             T otherItem = other.get(i);
             if (thisItem == null) {
